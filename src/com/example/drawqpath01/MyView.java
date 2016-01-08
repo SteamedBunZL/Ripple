@@ -52,9 +52,9 @@ public class MyView extends SurfaceView implements Callback, Runnable {
 	private int mState2 = UP;
 	private int mState3 = DOWN;
 
-	private static final int SWING = 7;
+	private static final int SWING = 12;
 
-	private float SPEED = 7f;
+	private float SPEED = 10f;
 
 	private Path mCirclePath;
 
@@ -94,7 +94,7 @@ public class MyView extends SurfaceView implements Callback, Runnable {
 		mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 		mCirclePaint.setColor(getResources().getColor(R.color.circle));
 		mCirclePaint.setStyle(Style.STROKE);
-		mCirclePaint.setStrokeWidth(10);
+		mCirclePaint.setStrokeWidth(20);
 		mCirclePath = new Path();
 		mPath1 = new Path();
 		mPath2 = new Path();
@@ -179,6 +179,10 @@ public class MyView extends SurfaceView implements Callback, Runnable {
 			}
 		}
 	}
+	
+	public void stop(){
+		mFlag = false;
+	}
 
 	private void draw() {
 		try {
@@ -216,10 +220,11 @@ public class MyView extends SurfaceView implements Callback, Runnable {
 
 	private void drawPath(Canvas canvas) {
 		mPath1.reset();
-		mPath1.moveTo(mStartX1 - 10, mStartY1);
+		mPath1.moveTo(mStartX1, mStartY1);
+		Log.d("", "===draw x1 : " + mStartX1 + ",y1 : " + mStartY1);
 		mPath1.quadTo(mControlX1, mMinY, mEndX1, mEndY1);
 		mPath1.lineTo(mEndX1, mScreenY);
-		mPath1.lineTo(mStartX1 - 10, mScreenY);
+		mPath1.lineTo(mStartX1, mScreenY);
 		mPath1.close();
 		canvas.drawPath(mPath1, mPaint);
 		mPath2.reset();
@@ -241,6 +246,7 @@ public class MyView extends SurfaceView implements Callback, Runnable {
 		mPath4.quadTo(mControlX4, mMaxY, mEndX4, mEndY4);
 		mPath4.lineTo(mEndX4, mScreenY);
 		mPath4.lineTo(mStartX4, mScreenY);
+		Log.d("", "===draw x4 : " + mEndX4 + ",y4 : " + mEndY4);
 		mPath4.close();
 		canvas.drawPath(mPath4, mPaint);
 	}
@@ -251,6 +257,9 @@ public class MyView extends SurfaceView implements Callback, Runnable {
 			Log.d("", "===ZL : x1: " + mStartX1 + ",end4 : " + mEndX4);
 			mControlX1 = mX + mRadius + mRadius / 2;
 			mEndX1 = mX + mRadius * 2;
+			mStartX1 -=SPEED;
+			mControlX1 -= SPEED;
+			mEndX1 -=SPEED;
 		} else {
 			mStartX1 -= SPEED;
 			mControlX1 -= SPEED;
@@ -262,6 +271,9 @@ public class MyView extends SurfaceView implements Callback, Runnable {
 			Log.d("", "===ZL : x1: " + mStartX1 + ",end4 : " + mEndX4);
 			mControlX2 = mX + mRadius + mRadius / 2;
 			mEndX2 = mX + mRadius * 2;
+			mStartX2 -= SPEED;
+			mControlX2 -= SPEED;
+			mEndX2 -= SPEED;
 		} else {
 			mStartX2 -= SPEED;
 			mControlX2 -= SPEED;
@@ -273,6 +285,9 @@ public class MyView extends SurfaceView implements Callback, Runnable {
 			Log.d("", "===ZL : x1: " + mStartX1 + ",end4 : " + mEndX4);
 			mControlX3 = mX + mRadius + mRadius / 2;
 			mEndX3 = mX + mRadius * 2;
+			mStartX3 -= SPEED;
+			mControlX3 -= SPEED;
+			mEndX3 -= SPEED;
 		} else {
 			mStartX3 -= SPEED;
 			mControlX3 -= SPEED;
@@ -284,6 +299,9 @@ public class MyView extends SurfaceView implements Callback, Runnable {
 			Log.d("", "===ZL : x1: " + mStartX1 + ",end4 : " + mEndX4);
 			mControlX4 = mX + mRadius + mRadius / 2;
 			mEndX4 = mX + mRadius * 2;
+			mStartX4 -= SPEED;
+			mControlX4 -= SPEED;
+			mEndX4 -= SPEED;
 		} else {
 			mStartX4 -= SPEED;
 			mControlX4 -= SPEED;
@@ -292,61 +310,6 @@ public class MyView extends SurfaceView implements Callback, Runnable {
 
 	}
 
-	private FlaotPoint[] getPoints(Path path) {
-		FlaotPoint[] pointArray = new FlaotPoint[20];
-		PathMeasure pm = new PathMeasure(path, false);
-		float length = pm.getLength();
-		float distance = 0f;
-		float speed = length / 20;
-		int counter = 0;
-		float[] aCoordinates = new float[2];
-		while ((distance < length) && (counter < 20)) {
-			pm.getPosTan(distance, aCoordinates, null);
-			pointArray[counter] = new FlaotPoint(aCoordinates[0], aCoordinates[1]);
-			counter++;
-			distance = distance + speed;
-		}
-		return pointArray;
-	}
-
-	class FlaotPoint {
-		float x, y;
-
-		public FlaotPoint(float x, float y) {
-			this.x = x;
-			this.y = y;
-		}
-
-		public float getX() {
-			return x;
-		}
-
-		public float getY() {
-			return y;
-		}
-	}
-
-	// @Override
-	// protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-	// // int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-	// // int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-	// // int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-	// // int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-	// // Log.i("", "===ZL widthsize : " + widthSize);
-	// // Log.i("", "===ZL heightsize : " + heightSize);
-	// super.measure(widthMeasureSpec, heightMeasureSpec);
-	// }
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-		Log.i("", "===ZL widthsize : " + widthSize);
-		Log.i("", "===ZL heightsize : " + heightSize);
-		setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
-	}
-	
 	public void setFlowText(String text){
 		mRemainFlowText = text;
 	}

@@ -4,5 +4,9 @@
     <color name="bowen">#43B227</color>
     <color name="bowen_bg">#22A501</color>
     <color name="circle">#209901</color>
+    <color name="color1">#FF0000</color>
+    <color name="color2">#EEEE00</color>
+    <color name="color3">#43B227</color>
+    <color name="color4">#1C86EE</color>
 
 </resources>
